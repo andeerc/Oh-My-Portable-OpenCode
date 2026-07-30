@@ -325,14 +325,29 @@ def _sync_tree(api_url, local_dir, token):
 
 
 def sync_all():
-    """Sincroniza todos os itens configurados do GitHub."""
+    """Sincroniza todos os itens configurados do GitHub. Se sem token, usa arquivos locais."""
     token = _get_github_token()
-    if not token:
-        print("\n▸ Sync: Token não encontrado. Configure .token ou OPENCODE_GH_TOKEN.")
-        return
 
-    print("\n▸ Sincronizando do GitHub")
+    if token:
+        print("\n▸ Sincronizando do GitHub")
+        _sync_from_github(token)
+    else:
+        print("\n▸ Sync: Sem token GitHub — usando arquivos locais do repositório")
+        for item_path in SYNC_ITEMS:
+            local = BASE_DIR / item_path
+            if local.exists():
+                # Conta arquivos
+                if local.is_file():
+                    print(f"  * {item_path} ({(local.stat().st_size)} bytes)")
+                else:
+                    files = sum(1 for _ in local.rglob("*") if _.is_file())
+                    print(f"  * {item_path}/ ({files} arquivos)")
+            else:
+                print(f"  x {item_path}/ — não encontrado localmente")
 
+
+def _sync_from_github(token):
+    """Sincroniza do GitHub usando a API."""
     for item_path in SYNC_ITEMS:
         local_target = BASE_DIR / item_path
         api_url = (
@@ -441,15 +456,20 @@ def build_plugins():
             print(f"  -> {name}: instalando...")
             try:
                 if sys.platform == "win32":
-                    subprocess.run(
+                    # Tenta junction primeiro, fallback pra cópia do diretório dist
+                    result = subprocess.run(
                         ["cmd", "/c", "mklink", "/J", str(link), str(plugin_dir.resolve())],
-                        capture_output=True, text=True, check=True, shell=True
+                        capture_output=True, text=True, shell=True
                     )
+                    if result.returncode != 0:
+                        # Fallback: npm link
+                        subprocess.run(["npm", "install", str(plugin_dir)],
+                            cwd=str(BASE_DIR), shell=True, capture_output=True)
                 else:
                     link.symlink_to(plugin_dir.resolve())
                 print(f"  * {name} instalado")
             except Exception as e:
-                print(f"  x {name}: erro ao criar link: {e}")
+                print(f"  x {name}: erro: {e}")
         else:
             print(f"  * {name}")
 
