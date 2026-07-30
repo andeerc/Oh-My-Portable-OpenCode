@@ -6,6 +6,23 @@ Sem containers. O OpenCode é instalado localmente via npm — portátil entre m
 
 ---
 
+## Testar direto do GitHub
+
+```bash
+git clone https://github.com/andeerc/Oh-My-Portable-OpenCode.git
+cd Oh-My-Portable-OpenCode
+
+# Opção A — Python direto (precisa de Python 3.12+)
+python ompo.py install
+
+# Opção B — Download do binário compilado (vá em Releases > baixar ompo.exe)
+ompo install
+```
+
+O pipeline em `.github/workflows/build.yml` compila o binário automaticamente. Releases com `ompo.exe` prontos em Tags `v*`.
+
+---
+
 ## 📁 Estrutura
 
 ```
@@ -157,7 +174,8 @@ Plugin incluído: [`opencode-omniroute-auth`](https://github.com/Alph4d0g/openco
 ```bash
 pip install pyinstaller
 pyinstaller --onefile --name=ompo ompo.py
+# exe em dist/ompo.exe
 ```
 
-O executável vai para `dist/ompo.exe`. Copie para a raiz do projeto.
+CI já configurado (`.github/workflows/build.yml`): a cada push no `main` ou tag `v*`, GitHub Actions compila `ompo.exe` (Windows + Linux) e disponibiliza como artefato. Tags `v*` geram release com os binários. É só baixar da página de Releases.
 # Oh-My-Portable-OpenCode
