@@ -1,0 +1,222 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "agent": {
+    "build": {
+      "permission": {
+        "bash": {
+          "$HOME/.claude/skills/qmd-knowledge/scripts/record.sh": "allow",
+          "$HOME/.config/opencode/skills/qmd-knowledge/scripts/record.sh": "allow",
+          "git push": "ask",
+          "qmd": "allow",
+          "qmd get": "allow",
+          "qmd query": "allow",
+          "qmd search": "allow"
+        }
+      }
+    },
+    "explorer": {
+      "description": "Fast explorer subagent for codebase exploration",
+      "mode": "subagent",
+      "model": "omniroute/free"
+    }
+  },
+  "default_agent": "plan",
+  "formatter": {
+    "biome": {
+      "command": [
+        "biome",
+        "check",
+        "--write",
+        "$FILE"
+      ],
+      "extensions": [
+        ".ts",
+        ".tsx",
+        ".js",
+        ".jsx"
+      ]
+    },
+    "gofmt": {
+      "command": [
+        "gofmt",
+        "-w",
+        "$FILE"
+      ],
+      "extensions": [
+        ".go"
+      ]
+    },
+    "prettier": {
+      "command": [
+        "npx",
+        "prettier",
+        "--write",
+        "$FILE"
+      ],
+      "extensions": [
+        ".md",
+        ".mdx"
+      ]
+    },
+    "ruff": {
+      "command": [
+        "ruff",
+        "format",
+        "$FILE"
+      ],
+      "extensions": [
+        ".py"
+      ]
+    },
+    "rustfmt": {
+      "command": [
+        "rustfmt",
+        "$FILE"
+      ],
+      "extensions": [
+        ".rs"
+      ]
+    },
+    "shfmt": {
+      "command": [
+        "shfmt",
+        "-w",
+        "$FILE"
+      ],
+      "extensions": [
+        ".sh"
+      ]
+    },
+    "stylua": {
+      "command": [
+        "stylua",
+        "$FILE"
+      ],
+      "extensions": [
+        ".lua"
+      ]
+    }
+  },
+  "mcp": {
+    "agentmemory": {
+      "command": [
+        "npx",
+        "-y",
+        "@agentmemory/mcp"
+      ],
+      "enabled": true,
+      "environment": {
+        "AGENTMEMORY_SECRET": "${AGENTMEMORY_SECRET:-}",
+        "AGENTMEMORY_TOOLS": "${AGENTMEMORY_TOOLS:-all}",
+        "AGENTMEMORY_URL": "${AGENTMEMORY_URL:-http://localhost:3111}"
+      },
+      "type": "local"
+    },
+    "context7": {
+      "command": [
+        "npx",
+        "-y",
+        "@upstash/context7-mcp@latest"
+      ],
+      "enabled": true,
+      "type": "local"
+    },
+    "fff": {
+      "command": [
+        "fff-mcp"
+      ],
+      "enabled": true,
+      "type": "local"
+    },
+    "logpilot": {
+      "command": [
+        "logpilot",
+        "mcp-server"
+      ],
+      "enabled": true,
+      "type": "local"
+    },
+    "qmd": {
+      "command": [
+        "qmd",
+        "mcp"
+      ],
+      "enabled": true,
+      "type": "local"
+    },
+    "react-grab-mcp": {
+      "command": [
+        "npx",
+        "-y",
+        "@react-grab/mcp",
+        "--stdio"
+      ],
+      "enabled": true,
+      "type": "local"
+    },
+    "sem": {
+      "command": [
+        "sem-mcp"
+      ],
+      "enabled": true,
+      "type": "local"
+    },
+    "sequential-thinking": {
+      "command": [
+        "npx",
+        "-y",
+        "@modelcontextprotocol/server-sequential-thinking"
+      ],
+      "enabled": true,
+      "type": "local"
+    },
+    "ctx": {
+      "command": [
+        "ctx",
+        "mcp",
+        "serve"
+      ],
+      "enabled": true,
+      "type": "local"
+    },
+    "codebase-memory-mcp": {
+      "enabled": true,
+      "type": "local",
+      "command": [
+        "codebase-memory-mcp"
+      ]
+    }
+  },
+  "model": "omniroute/free",
+  "plugin": [
+    "@plannotator/opencode@latest",
+    "opencode-chrome-annotation@latest",
+    "opencode-conductor",
+    "opencode-scheduler",
+    "opencode-skillful",
+    "opencode-omniroute-auth"
+  ],
+  "provider": {
+    "omniroute": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "OmniRoute",
+      "options": {
+        "apiMode": "chat",
+        "refreshOnList": true,
+        "modelCacheTtl": 300000,
+        "modalities": {
+          "input": [
+            "image",
+            "text"
+          ],
+          "output": [
+            "text"
+          ]
+        }
+      }
+    }
+  },
+  "permission": {
+    "webfetch": "allow"
+  }
+}

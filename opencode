@@ -1,0 +1,6 @@
+#!/bin/bash
+OMPO_DIR="$(cd "$(dirname "$0")" && pwd)"
+export XDG_CONFIG_HOME="$OMPO_DIR/config"
+export XDG_DATA_HOME="$OMPO_DIR/data"
+export NODE_PATH="$OMPO_DIR/node_modules"
+exec "$OMPO_DIR/node_modules/.bin/opencode" "$@"
